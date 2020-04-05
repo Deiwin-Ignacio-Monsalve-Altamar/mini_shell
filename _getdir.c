@@ -1,46 +1,50 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-/**
- * _getenv - search enviroment
- * 
- *@name: cons char
- *Return: char.
- */
-extern char **environ;
-int _getdir(const char *name)
+#include "holberton.h"
+char **_getdir(char *str)
 {
-	char *token, *str, *tmp;
-	int x = 0;
-
-	
-	while (environ[x])
-	{
-		tmp = strdup(environ[x]);
-		token = strtok(tmp, "=");
-		if (strcmp(name, token) == 0)
-		{
-			token = strtok(NULL, "=");
-			str = strdup(token);
-			token = strtok(str, ":");
-			while (token != NULL)
-			{   printf("%s\n", token);
-				token = strtok(NULL, ":");
-			}
-			return (0);
-		}
-		x++;
+	char *new;
+    char **text, *token;
+    int i = 0;
+    new = strdup(str);
+    token = strtok(str, ":");
+    i = 0;
+    while (token != NULL)
+    {
+            i++;
+            token = strtok(NULL, ":");
+    } 
+    text = malloc(sizeof(char *) * (i + 1));
+        
+    token = strtok(new, ":");
+    i = 0;
+    while (token != NULL)
+    {
+        text[i] = malloc(sizeof(char) * strlen(token));
+        text[i] = token;
+        i++;
+        token = strtok(NULL, ":");
     }
-    return (-1);
+    text[i] = '\0'; 
+    return (text);
 }
 /**
  * main - prints the environment
  *
  * Return: Always 0.
  */
-int main(int ac, char **av, char **env)
+int main(int ac, char **av)
 {
     const char *name = av[1];
-    _getdir(name);
+    char *enve = _getenv(name);
+    char **tmp;
+
+    int j = 0; 
+    tmp = _getdir(enve);
+
+    for(j = 0; tmp[j]; j++)
+    {
+        printf("%s\n", tmp[j]);
+    }
+
+    free(tmp);
     return (0);
 }
