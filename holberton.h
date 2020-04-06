@@ -10,12 +10,12 @@
  *@name: cons char
  *Return: char.
  */
-typedef struct dir
+typedef struct list_s
 {
-    char *dir;
-    struct dir *next;
-} dir_t;
-
+	char *str;
+	struct list_s *next;
+} list_t;
+extern char **environ;
 char *_getenv(const char *name);
 char **_getdir(char *str);
 #endif

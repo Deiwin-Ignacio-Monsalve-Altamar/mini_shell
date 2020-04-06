@@ -1,4 +1,6 @@
-#include "holberton.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 /**
  * _getenv - search enviroment
  * 
@@ -24,4 +26,18 @@ char *_getenv(const char *name)
     }
     free(s);
     return (NULL);
+}
+/**
+ * main - prints the environment
+ *
+ * Return: Always 0.
+ */
+int main(int ac, char **av, char **env)
+{
+    const char *name = av[1];
+    char *enve = _getenv(name);
+
+    printf("%s\n", enve);
+    return (0);
+
 }
