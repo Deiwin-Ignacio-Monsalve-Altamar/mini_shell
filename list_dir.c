@@ -1,109 +1,124 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include "holberton.h"
-/**
- * struct - search enviroment
- * 
- *@name: cons char
- *Return: char.
- */
-typedef struct list_s
-{
-	char *str;
-	struct list_s *next;
+#include <stdlib.h>
+#include <unistd.h>
+
+typedef struct l_path{
+char *st;
+struct l_path *next;
 } list_t;
 
-char *_getenv(const char *name)
-{ 
-    extern char **environ;
-    unsigned int i = 0;
-    char *token;
-    char *s = malloc(sizeof(char) * 64);
-    while(environ[i])
-    { 
-        s = strdup(environ[i]);
-        token = strtok(s, "=");
-        if (strcmp(token, name) == 0)
-        {
-            token = strtok(NULL, "=");  
-            return (token);
-        }
-       i++;
-    }
-    free(s);
-    return (NULL);
+void freellp(list_t *head);
+list_t *lpath(void);
+list_t *llist_d(list_t **head, const char *str);
+size_t lprint(const list_t *head);
+
+int main()
+{
+	list_t *list;
+	list = lpath();
+	lprint(list);
+	freellp(list);
+	//free(list);
+	return (0);
 }
 
-/**
- * _getenv - search enviroment
- * 
- *@name: cons char
- *Return: char.
- */
-char **_getdir(char *str)
+list_t *lpath(void)
 {
-	char *new;
-    char **text, *token;
-    int i = 0;
-    new = strdup(str);
-    token = strtok(str, ":");
-    i = 0;
-    while (token != NULL)
-    {
-            i++;
-            token = strtok(NULL, ":");
-    } 
-    text = malloc(sizeof(char *) * (i + 1));
-        
-    token = strtok(new, ":");
-    i = 0;
-    while (token != NULL)
-    {
-        text[i] = malloc(sizeof(char) * strlen(token));
-        text[i] = token;
-        i++;
-        token = strtok(NULL, ":");
-    }
-    text[i] = '\0'; 
-    return (text);
+	extern char **environ;
+	char *token, *str, *aux, *aux1, *tmp;
+	int x = 0;
+	list_t **head;
+	head = malloc (sizeof(list_t *));
+	*head = NULL;
+	aux = "PATH";
+	while (environ[x])
+	{
+		tmp = strdup(environ[x]);
+		token = strtok(tmp, "=");
+		if (strcmp(aux, token) == 0)
+		{
+			token = strtok(NULL, "=");
+			str = strdup(token);
+			token = strtok(str, ":");
+			while (token != NULL)
+			{
+				aux1 = strdup(token);
+				*head = llist_d(head, aux1);
+				token = strtok(NULL, ":");
+				free(aux1);
+			}
+			free(tmp);
+			free(str);
+			return (*head);
+		}
+		x++;
+		free(tmp);
+	}
+	return (*head);
 }
-/**
- * add_node - print cotaing in list
- * @head: pointrs list_t
- * @str: const char
- * Return: list
- */
-void add_node(list_t *s)
-{
-	list_t *new;
 
+list_t *llist_d(list_t **head, const char *str)
+{
+	list_t *new, *curr;
+	char *str1;
+	curr = *head;
 	new = malloc(sizeof(list_t));
-	(*new).str = *s;
-	(*new).next = head;
-
-    head = new;
+	if (new == NULL)
+		return (NULL);
+	str1 = strdup(str);
+	if (str1 == NULL)
+	{
+		free(new);
+		free(str1);
+		return (NULL);
+	}
+	(*new).st = str1;
+	(*new).next = NULL;
+	if(*head != NULL)
+	{
+		while((*curr).next != NULL)
+		{
+			curr = (*curr).next;
+		}
+		(*curr).next = new;
+	}
+	else
+	{
+		*head = new;
+	}
+	return (*head);
 }
 
-/**
- * main - prints the environment
- *
- * Return: Always 0.
- */
-int main(int ac, char **av)
+size_t lprint(const list_t *head)
 {
-    const char *name = av[1];
-    char *enve = _getenv(name);
-    char **tmp;
-
-    int j = 0; 
-    tmp = _getdir(enve);
-
-    for(j = 0; tmp[j]; j++)
-    {
-        add_node(tmp[j]);
-    }
-
-    free(tmp);
-    return (0);
+	int x;
+	const list_t *curr;
+	if(head != NULL)
+	{
+		curr = head;
+		for (x = 0; curr != NULL; x++)
+		{
+			if ((*curr).st == 0)
+				printf("(nil)\n");
+			else
+				printf("%s\n", (*curr).st);
+			curr = (*curr).next;
+		}
+	}
+	return (x);
+}
+void freellp(list_t *head)
+{
+	list_t *aux;
+	if (head != NULL)
+	{
+		while (head != NULL)
+		{
+			aux = head;
+			head = (*head).next;
+			free((*aux).st);
+			free(aux);
+		}
+		free(head);
+	}
 }

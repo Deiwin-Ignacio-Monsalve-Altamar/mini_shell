@@ -9,23 +9,26 @@
  */
 char *_getenv(const char *name)
 { 
-    extern char **environ;
-    unsigned int i = 0;
-    char *token;
-    char *s = malloc(sizeof(char) * 64);
-    while(environ[i])
-    { 
-        s = strdup(environ[i]);
-        token = strtok(s, "=");
-        if (strcmp(token, name) == 0)
-        {
-            token = strtok(NULL, "=");  
-            return (token);
-        }
-       i++;
-    }
-    free(s);
-    return (NULL);
+	extern char **environ;
+	char *token;
+	int x = 0;
+	char *tmp, *str;
+
+	while (environ[x])
+	{
+		tmp = strdup(environ[x]);
+		token = strtok(tmp, "=");
+		if (strcmp(name, token) == 0)
+		{
+			token = strtok(NULL, "=");
+			str = strdup(token);
+			free(tmp);
+			return (str);
+		}
+		free(tmp);
+		x++;
+	}
+	return (NULL);
 }
 /**
  * main - prints the environment
@@ -37,7 +40,14 @@ int main(int ac, char **av, char **env)
     const char *name = av[1];
     char *enve = _getenv(name);
 
+    if (enve)
+    {
     printf("%s\n", enve);
+    free(enve);
+    }
+    else
+        printf("Error\n");
     return (0);
 
 }
+

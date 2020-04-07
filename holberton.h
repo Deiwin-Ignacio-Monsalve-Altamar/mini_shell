@@ -18,4 +18,8 @@ typedef struct list_s
 extern char **environ;
 char *_getenv(const char *name);
 char **_getdir(char *str);
+void freellp(list_t *head);
+list_t *lpath(void);
+list_t *llist_d(list_t **head, const char *str);
+size_t lprint(const list_t *head);
 #endif
